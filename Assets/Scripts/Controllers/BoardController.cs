@@ -154,10 +154,15 @@ public class BoardController : MonoBehaviour
             List<Cell> cells1 = GetMatches(cell1);
             List<Cell> cells2 = GetMatches(cell2);
 
-            List<Cell> matches = new List<Cell>();
-            matches.AddRange(cells1);
-            matches.AddRange(cells2);
-            matches = matches.Distinct().ToList();
+
+            // distince gay spike do match 3 k biet extend den dau 
+            //List<Cell> matches = new List<Cell>();
+            //matches.AddRange(cells1);
+            //matches.AddRange(cells2);
+            //matches = matches.Distinct().ToList();
+            //=> doi sang hashset de cache
+            HashSet<Cell> matches = new HashSet<Cell>(cells1);
+            matches.UnionWith(cells2);
 
             if (matches.Count < m_gameSettings.MatchesMin)
             {
@@ -169,7 +174,7 @@ public class BoardController : MonoBehaviour
             else
             {
                 OnMoveEvent();
-                CollapseMatches(matches, cell2);
+                CollapseMatches(matches.ToList(), cell2);
             }
         }
     }
