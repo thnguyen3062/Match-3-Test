@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using PathologicalGames;
 
 [Serializable]
 public class Item
@@ -21,7 +22,9 @@ public class Item
             GameObject prefab = Resources.Load<GameObject>(prefabname);
             if (prefab)
             {
-                View = GameObject.Instantiate(prefab).transform;
+                View = PoolManager.Pools["Item"].Spawn(prefab);
+                Debug.Log("spawn view");
+                View.localScale = Vector3.one;
             }
         }
     }
@@ -45,14 +48,6 @@ public class Item
         if (View)
         {
             View.position = pos;
-        }
-    }
-
-    public void SetViewRoot(Transform root)
-    {
-        if (View)
-        {
-            View.SetParent(root);
         }
     }
 
@@ -101,7 +96,7 @@ public class Item
             View.DOScale(0.1f, 0.1f).OnComplete(
                 () =>
                 {
-                    GameObject.Destroy(View.gameObject);
+                    PoolManager.Pools["Item"].Despawn(View);
                     View = null;
                 }
                 );
@@ -132,7 +127,7 @@ public class Item
 
         if (View)
         {
-            GameObject.Destroy(View.gameObject);
+            PoolManager.Pools["Item"].Despawn(View);
             View = null;
         }
     }

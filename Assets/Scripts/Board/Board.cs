@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using PathologicalGames;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -47,10 +48,9 @@ public class Board
         {
             for (int y = 0; y < boardSizeY; y++)
             {
-                GameObject go = GameObject.Instantiate(prefabBG);
-                go.transform.position = origin + new Vector3(x, y, 0f);
-                go.transform.SetParent(m_root);
-
+                Transform go = PoolManager.Pools["Item"].Spawn(prefabBG);
+                go.position = origin + new Vector3(x, y, 0f);
+                go.localScale = Vector3.one;
                 Cell cell = go.GetComponent<Cell>();
                 cell.Setup(x, y);
 
@@ -102,7 +102,6 @@ public class Board
 
                 item.SetType(Utils.GetRandomNormalTypeExcept(types.ToArray()));
                 item.SetView();
-                item.SetViewRoot(m_root);
                 cell.Assign(item);
                 cell.ApplyItemPosition(false);
             }
@@ -180,7 +179,6 @@ public class Board
                 }
                 item.SetType(Utils.GetPriorityNormalTypeExcept(types.ToArray(),GetLeastUsedItemTypeList().ToArray()));
                 item.SetView();
-                item.SetViewRoot(m_root);
                 cell.Assign(item);
                 cell.ApplyItemPosition(true);
             }
@@ -332,8 +330,6 @@ public class Board
             }
 
             item.SetView();
-            item.SetViewRoot(m_root);
-
             cellToConvert.Free();
             cellToConvert.Assign(item);
             cellToConvert.ApplyItemPosition(true);
@@ -716,9 +712,8 @@ public class Board
             for (int y = 0; y < boardSizeY; y++)
             {
                 Cell cell = m_cells[x, y];
+                PoolManager.Pools["Item"].Despawn(cell.transform);
                 cell.Clear();
-
-                GameObject.Destroy(cell.gameObject);
                 m_cells[x, y] = null;
             }
         }
