@@ -30,6 +30,7 @@ public class BoardController : MonoBehaviour
     private bool m_hintIsShown;
 
     private bool m_gameOver;
+    private Cell m_CurCellDrag = null;
 
     public void StartGame(GameManager gameManager, GameSettings gameSettings)
     {
@@ -92,12 +93,14 @@ public class BoardController : MonoBehaviour
             {
                 m_isDragging = true;
                 m_hitCollider = hit.collider;
+                m_CurCellDrag = hit.collider.GetComponent<Cell>();
             }
         }
 
         if (Input.GetMouseButtonUp(0))
         {
             ResetRayCast();
+            m_CurCellDrag = null;
         }
 
         if (Input.GetMouseButton(0) && m_isDragging)
@@ -108,16 +111,14 @@ public class BoardController : MonoBehaviour
                 if (m_hitCollider != null && m_hitCollider != hit.collider)
                 {
                     StopHints();
-
-                    Cell c1 = m_hitCollider.GetComponent<Cell>();
                     Cell c2 = hit.collider.GetComponent<Cell>();
-                    if (AreItemsNeighbor(c1, c2))
+                    if (AreItemsNeighbor(m_CurCellDrag, c2))
                     {
                         IsBusy = true;
-                        SetSortingLayer(c1, c2);
-                        m_board.Swap(c1, c2, () =>
+                        SetSortingLayer(m_CurCellDrag, c2);
+                        m_board.Swap(m_CurCellDrag, c2, () =>
                         {
-                            FindMatchesAndCollapse(c1, c2);
+                            FindMatchesAndCollapse(m_CurCellDrag, c2);
                         });
 
                         ResetRayCast();
