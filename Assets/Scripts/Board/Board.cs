@@ -145,8 +145,40 @@ public class Board
                 if (!cell.IsEmpty) continue;
 
                 NormalItem item = new NormalItem();
-
-                item.SetType(Utils.GetRandomNormalType());
+                List<NormalItem.eNormalType> types = new List<NormalItem.eNormalType>();
+                if (cell.NeighbourBottom != null)
+                {
+                    NormalItem nitem = cell.NeighbourBottom.Item as NormalItem;
+                    if (nitem != null)
+                    {
+                        types.Add(nitem.ItemType);
+                    }
+                }
+                if (cell.NeighbourUp != null)
+                {
+                    NormalItem nitem = cell.NeighbourUp.Item as NormalItem;
+                    if (nitem != null)
+                    {
+                        types.Add(nitem.ItemType);
+                    }
+                }
+                if (cell.NeighbourLeft != null)
+                {
+                    NormalItem nitem = cell.NeighbourLeft.Item as NormalItem;
+                    if (nitem != null)
+                    {
+                        types.Add(nitem.ItemType);
+                    }
+                }
+                if (cell.NeighbourRight != null)
+                {
+                    NormalItem nitem = cell.NeighbourRight.Item as NormalItem;
+                    if (nitem != null)
+                    {
+                        types.Add(nitem.ItemType);
+                    }
+                }
+                item.SetType(Utils.GetPriorityNormalTypeExcept(types.ToArray(),GetLeastUsedItemTypeList().ToArray()));
                 item.SetView();
                 item.SetViewRoot(m_root);
                 cell.Assign(item);
@@ -154,7 +186,26 @@ public class Board
             }
         }
     }
-
+    internal List<NormalItem.eNormalType> GetLeastUsedItemTypeList()
+    {
+        Dictionary<NormalItem.eNormalType, int> typeCounts = new Dictionary<NormalItem.eNormalType, int>();
+        foreach (NormalItem.eNormalType type in Enum.GetValues(typeof(NormalItem.eNormalType)))
+            typeCounts[type] = 0;
+        for (int x = 0; x < boardSizeX; x++)
+        {
+            for (int y = 0; y < boardSizeY; y++)
+            {
+                Cell cell = m_cells[x, y];
+                NormalItem nItem = cell.Item as NormalItem;
+                if (nItem != null)
+                    typeCounts[nItem.ItemType]++;
+            }
+        }
+        List<NormalItem.eNormalType> sortedTypes = typeCounts.OrderBy(kv => kv.Value)
+                                    .Select(kv => kv.Key)
+                                    .ToList();
+        return sortedTypes;
+    }
     internal void ExplodeAllItems()
     {
         for (int x = 0; x < boardSizeX; x++)

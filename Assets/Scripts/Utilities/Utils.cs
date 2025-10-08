@@ -14,7 +14,12 @@ public class Utils
 
         return result;
     }
-
+    public static NormalItem.eNormalType GetPriorityNormalTypeExcept(NormalItem.eNormalType[] exceptList, NormalItem.eNormalType[] priorityList)
+    {
+        List<NormalItem.eNormalType> list = Enum.GetValues(typeof(NormalItem.eNormalType)).Cast<NormalItem.eNormalType>().Except(exceptList).ToList();
+        NormalItem.eNormalType result = priorityList.FirstOrDefault(p=> list.Contains(p));
+        return result;
+    }
     public static NormalItem.eNormalType GetRandomNormalTypeExcept(NormalItem.eNormalType[] types)
     {
         List<NormalItem.eNormalType> list = Enum.GetValues(typeof(NormalItem.eNormalType)).Cast<NormalItem.eNormalType>().Except(types).ToList();
