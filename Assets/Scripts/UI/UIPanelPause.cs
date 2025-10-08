@@ -7,12 +7,14 @@ using UnityEngine.UI;
 public class UIPanelPause : MonoBehaviour, IMenu
 {
     [SerializeField] private Button btnClose;
+    [SerializeField] private Button btnRestart;
 
     private UIMainManager m_mngr;
 
     private void Awake()
     {
         btnClose.onClick.AddListener(OnClickClose);
+        btnRestart.onClick.AddListener(OnClickRestart);
     }
 
     private void OnDestroy()
@@ -38,5 +40,9 @@ public class UIPanelPause : MonoBehaviour, IMenu
     public void Hide()
     {
         this.gameObject.SetActive(false);
+    }
+    public void OnClickRestart()
+    {
+        m_mngr.OnRestartGame();
     }
 }

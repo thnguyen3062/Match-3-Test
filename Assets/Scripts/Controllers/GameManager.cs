@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
+    private eLevelMode curLevel;
     private GameSettings m_gameSettings;
 
 
@@ -83,6 +83,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadLevel(eLevelMode mode)
     {
+        curLevel = mode;
         m_boardController = new GameObject("BoardController").AddComponent<BoardController>();
         m_boardController.StartGame(this, m_gameSettings);
 
@@ -107,6 +108,11 @@ public class GameManager : MonoBehaviour
         StartCoroutine(WaitBoardController());
     }
 
+    public void Restart()
+    {
+        ClearLevel();
+        LoadLevel(curLevel);
+    }
     internal void ClearLevel()
     {
         if (m_boardController)
