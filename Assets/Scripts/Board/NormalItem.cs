@@ -21,7 +21,42 @@ public class NormalItem : Item
     {
         ItemType = type;
     }
-
+    public Sprite GetSkin(int idSkin)
+    {
+        int typeIndex = 0;
+        switch (ItemType)
+        {
+            case eNormalType.TYPE_ONE:
+                typeIndex = 0;
+                break;
+            case eNormalType.TYPE_TWO:
+                typeIndex = 1;
+                break;
+            case eNormalType.TYPE_THREE:
+                typeIndex = 2;
+                break;
+            case eNormalType.TYPE_FOUR:
+                typeIndex = 3;
+                break;
+            case eNormalType.TYPE_FIVE:
+                typeIndex = 4;
+                break;
+            case eNormalType.TYPE_SIX:
+                typeIndex = 5;
+                break;
+            case eNormalType.TYPE_SEVEN:
+                typeIndex = 6;
+                break;
+        }
+        Sprite s = ItemSkinDataSO.Instance.GetItemSprite(idSkin , typeIndex);
+        return s;
+    }
+    public override void SetView()
+    {
+        base.SetView();
+        // tam fix cung texture fish id 1
+        View.GetComponent<SpriteRenderer>().sprite = GetSkin(1);
+    }
     protected override string GetPrefabName()
     {
         string prefabname = string.Empty;
